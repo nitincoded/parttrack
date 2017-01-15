@@ -6,7 +6,7 @@
 <body>
 <div class="container">
 
-<h1>Manufacturer</h1>
+<h1>UoM</h1>
 
 <p>
     <a href="home"><i class="glyphicon glyphicon-chevron-left"></i> Home</a>
@@ -14,13 +14,13 @@
 
 <ul>
     <li>
-        <a href="manufacturer">Overview</a>
+        <a href="uom">Overview</a>
     </li>
     <li>
-        <a href="manufacturer-list">List</a>
+        <a href="uom-list">List</a>
     </li>
     <li>
-        <a href="manufacturer-edit">New</a>
+        <a href="uom-edit">New</a>
     </li>
 </ul>
 

@@ -20,6 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 //@RestController
 @Controller
 public class HelloController {
+    @RequestMapping({"/", "/home"})
+    public String welcome() {
+        return "welcome";
+    }
+
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String hello() throws Exception {
