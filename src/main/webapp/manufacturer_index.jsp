@@ -4,6 +4,7 @@
 <%@ include file="tpl_head.jsp" %>
 </head>
 <body>
+<div class="container">
 
 <h1>Manufacturer</h1>
 
@@ -19,5 +20,6 @@
     </li>
 </ul>
 
+</div>
 </body>
 </html>

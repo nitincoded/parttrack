@@ -1,6 +1,8 @@
 package com.katkam;
 
 import com.katkam.entity.Manufacturer;
+import com.katkam.entity.Part;
+import com.katkam.entity.Uom;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,6 +33,8 @@ public class GrizzlyHelper {
                 .addProperties(prop)
                 .addPackage("com.katkam.entity")
                 .addAnnotatedClass(Manufacturer.class)
+                .addAnnotatedClass(Uom.class)
+                .addAnnotatedClass(Part.class)
                 .buildSessionFactory()
                 ;
         }

@@ -7,14 +7,15 @@
 <%@ include file="tpl_head.jsp" %>
 </head>
 <body>
+<div class="container">
 
 <h1>Manufacturers</h1>
 
 <p>
-    <a href="manufacturer">Overview</a>
+    <a href="manufacturer"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
 </p>
 
-<table border="1">
+<table class="table table-striped table-bordered table-hover table-condensed">
     <tr>
         <th>ID</th>
         <th>Name</th>
@@ -40,5 +41,6 @@ for (Manufacturer iterModel : lst) {
 Item count is <% out.print(lst.size()); %>.
 </p>
 
+</div>
 </body>
 </html>

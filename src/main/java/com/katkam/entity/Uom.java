@@ -3,6 +3,7 @@ package com.katkam.entity;
 //import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Developer on 1/15/17.
@@ -17,6 +18,9 @@ public class Uom {
 //    @NotNull
     @Column(nullable = false, unique = true)
     private String name;
+
+    @OneToMany
+    private List<Part> parts;
 
 
     public int getId() {
@@ -34,6 +38,8 @@ public class Uom {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Part> getParts() { return parts; }
 
 
     public Uom() {}

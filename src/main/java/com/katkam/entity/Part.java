@@ -18,11 +18,13 @@ public class Part {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private int manufacturer_id;
+    @ManyToOne
+    @JoinColumn(name = "manufacturer_id")
+    private Manufacturer manufacturer;
 
-    @Column
-    private int uom_id;
+    @ManyToOne
+    @JoinColumn(name = "uom_id")
+    private Uom uom;
 
 
     public int getId() {
@@ -41,30 +43,24 @@ public class Part {
         this.name = name;
     }
 
-    public int getManufacturer_id() {
-        return manufacturer_id;
+    public Manufacturer getManufacturer() {
+        return manufacturer;
     }
 
-    public void setManufacturer_id(int manufacturer_id) {
-        this.manufacturer_id = manufacturer_id;
+    public void setManufacturer(Manufacturer a_manufacturer) {
+        this.manufacturer = a_manufacturer;
     }
 
-    public int getUom_id() {
-        return uom_id;
+    public Uom getUom() {
+        return uom;
     }
 
-    public void setUom_id(int uom_id) {
-        this.uom_id = uom_id;
+    public void setUom(Uom a_uom) {
+        this.uom = a_uom;
     }
 
 
     public Part() {}
-    public Part(int a_id, String a_name, int a_manufacturer_id, int a_uom_id) {
-        setId(a_id);
-        setName(a_name);
-        setManufacturer_id(a_manufacturer_id);
-        setUom_id(a_uom_id);
-    }
 
     @Override
     public String toString() {
