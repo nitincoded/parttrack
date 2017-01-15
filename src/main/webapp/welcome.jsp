@@ -15,6 +15,9 @@
     <li>
         <a href="manufacturer">Manufacturers</a>
     </li>
+    <li>
+        <a href="part">Parts</a>
+    </li>
 </ul>
 
 </div>
