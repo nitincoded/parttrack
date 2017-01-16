@@ -19,7 +19,7 @@ public class Manufacturer {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "manufacturer")
     private List<Part> parts;
 
 
@@ -39,7 +39,7 @@ public class Manufacturer {
         this.name = name;
     }
 
-    public List<Part> getParts() { return parts; }
+//    public List<Part> getParts() { return parts; }
 
 
     public Manufacturer() {}

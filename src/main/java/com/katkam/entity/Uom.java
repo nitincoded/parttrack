@@ -19,7 +19,7 @@ public class Uom {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "uom")
     private List<Part> parts;
 
 
@@ -39,7 +39,7 @@ public class Uom {
         this.name = name;
     }
 
-    public List<Part> getParts() { return parts; }
+//    public List<Part> getParts() { return parts; }
 
 
     public Uom() {}

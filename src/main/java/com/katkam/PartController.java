@@ -1,6 +1,8 @@
 package com.katkam;
 
+import com.katkam.entity.Manufacturer;
 import com.katkam.entity.Part;
+import com.katkam.entity.Uom;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,12 @@ public class PartController {
                     int a_id
     ) {
         ModelAndView mv = new ModelAndView("part_edit");
+
+        List<Manufacturer> lstManufacturers = new ArrayList<Manufacturer>();
+        lstManufacturers = (List<Manufacturer>) sess.createCriteria(Manufacturer.class).list();
+        List<Uom> lstUom = new ArrayList<Uom>();
+        lstUom = (List<Uom>) sess.createCriteria(Uom.class).list();
+
         if (a_id==-1) {
             //mv.addObject("m", new Manufacturer());
         } else {
@@ -54,6 +62,10 @@ public class PartController {
             mv.addObject("m", m);
         }
 //        mv.addObject("m", new Manufacturer(1, "Toyota"));
+
+        mv.addObject("manufacturers", lstManufacturers);
+        mv.addObject("uoms", lstUom);
+
         return mv;
     }
 

@@ -30,10 +30,6 @@ public class UomController {
 
     private List<Uom> getListContent() {
         List<Uom> lstRet = new ArrayList<Uom>();
-//        lstRet.add(new Manufacturer(1, "Toyota"));
-//        lstRet.add(new Manufacturer(2, "Honda"));
-//        lstRet.add(new Manufacturer(3, "Jeep"));
-//        lstRet = (List<Manufacturer>) sess.find(Manufacturer.class, null);
         lstRet = (List<Uom>) sess.createCriteria(Uom.class).list();
         return lstRet;
     }

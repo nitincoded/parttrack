@@ -26,10 +26,6 @@ public class ManufacturerController {
 
     private List<Manufacturer> getListContent() {
         List<Manufacturer> lstRet = new ArrayList<Manufacturer>();
-//        lstRet.add(new Manufacturer(1, "Toyota"));
-//        lstRet.add(new Manufacturer(2, "Honda"));
-//        lstRet.add(new Manufacturer(3, "Jeep"));
-//        lstRet = (List<Manufacturer>) sess.find(Manufacturer.class, null);
         lstRet = (List<Manufacturer>) sess.createCriteria(Manufacturer.class).list();
         return lstRet;
     }
