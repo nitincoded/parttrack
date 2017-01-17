@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Developer on 1/15/17.
@@ -21,6 +23,8 @@ import java.util.List;
 @Controller
 public class PartController {
     Session sess = GrizzlyHelper.getSession();
+
+    private final static Logger logger = Logger.getLogger(PartController.class.getName());
 
     @RequestMapping(value = "/part-list", method = RequestMethod.GET)
     public ModelAndView getList() {
@@ -82,11 +86,32 @@ public class PartController {
 
     @RequestMapping(value = "/part-save", method = RequestMethod.POST)
     public String postSave(
-            @ModelAttribute
-                    Part a_mfg
+        @ModelAttribute Part a_mfg,
+        @RequestParam(name = "uom_id") int uom_id,
+        @RequestParam(name = "manufacturer_id") Integer manufacturer_id
     ) {
+//        logger.setLevel(Level.ALL);
+//
+//        try {
+//            logger.info(
+//                    String.format(
+//                            "ID: %d, Name: %s, MfgId: %d, UomId: %d",
+//                            a_mfg.getId(),
+//                            a_mfg.getName(),
+//                            a_mfg.getManufacturer() == null ? "" : a_mfg.getManufacturer().getId(),
+//                            a_mfg.getUom() == null ? a_mfg.getUom().getId() : ""
+//                    )
+//            );
+//        }
+//        catch (Exception ex) {}
+
         //sess.merge(a_mfg);
         Transaction t = sess.beginTransaction();
+
+        a_mfg.setUom(sess.byId(Uom.class).load(uom_id));
+        if (manufacturer_id != null) {
+            a_mfg.setManufacturer(sess.byId(Manufacturer.class).load(manufacturer_id));
+        }
 
         if (a_mfg.getId()==-1) {
             a_mfg.setId(0);
