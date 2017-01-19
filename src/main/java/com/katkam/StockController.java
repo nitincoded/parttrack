@@ -1,7 +1,11 @@
 package com.katkam;
 
+import com.katkam.entity.Part;
 import com.katkam.entity.Stock;
+import com.katkam.entity.Store;
+import com.katkam.entity.Xact;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,15 +57,45 @@ public class StockController {
 
     @RequestMapping(value = "/stock-delete", method = RequestMethod.POST)
     public String postDelete(@RequestParam("id") int a_id) {
+        Stock m = sess.byId(Stock.class).load(a_id);
 
-        return null;
+        if (m.getQty()==0) { //Ensure stock is zero before deleting
+            Transaction t = sess.beginTransaction();
+            sess.delete(m);
+            t.commit();
+        }
+
+        return "redirect:/stock-list";
     }
 
     @RequestMapping(value = "/stock-save", method = RequestMethod.POST)
     public String postSave(
-        @ModelAttribute
-        Stock a_stock
+        @ModelAttribute Stock a_stock,
+        @RequestParam(name = "store_id") int store_id,
+        @RequestParam(name = "part_id") int part_id
     ) {
-        return null;
+        Transaction t = sess.beginTransaction();
+
+        Xact xact = new Xact();
+
+        a_stock.setStore(sess.byId(Store.class).load(store_id));
+        a_stock.setPart(sess.byId(Part.class).load(part_id));
+
+        xact.setStore(a_stock.getStore());
+        xact.setPart(a_stock.getPart());
+
+        if (a_stock.getId()==-1) {
+            a_stock.setId(0);
+            xact.setQty(a_stock.getQty());
+            sess.save(a_stock);
+        } else {
+            xact.setQty(sess.byId(Stock.class).load(a_stock.getId()).getQty() - a_stock.getQty());
+            sess.save(xact);
+            sess.merge(a_stock);
+        }
+
+        t.commit();
+
+        return "redirect:/stock";
     }
 }

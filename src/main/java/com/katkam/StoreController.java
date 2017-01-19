@@ -2,6 +2,7 @@ package com.katkam;
 
 import com.katkam.entity.Store;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,13 @@ public class StoreController {
 
     @RequestMapping(value = "/store-delete", method = RequestMethod.POST)
     public String postDelete(@RequestParam("id") int a_id) {
-        return null;
+        Store m = sess.byId(Store.class).load(a_id);
+
+        Transaction t = sess.beginTransaction();
+        sess.delete(m);
+        t.commit();
+
+        return "redirect:/store-list";
     }
 
     @RequestMapping(value = "/store-save", method = RequestMethod.POST)
@@ -61,6 +68,17 @@ public class StoreController {
         @ModelAttribute
         Store a_store
     ) {
-        return null;
+        Transaction t = sess.beginTransaction();
+
+        if (a_store.getId()==-1) {
+            a_store.setId(0);
+            sess.save(a_store);
+        } else {
+            sess.merge(a_store);
+        }
+
+        t.commit();
+
+        return "redirect:/store";
     }
 }

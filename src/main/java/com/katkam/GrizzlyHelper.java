@@ -35,7 +35,7 @@ public class GrizzlyHelper {
                 .addAnnotatedClass(Part.class)
                 .addAnnotatedClass(Store.class)
                 .addAnnotatedClass(Stock.class)
-                .addAnnotatedClass(Transaction.class)
+                .addAnnotatedClass(Xact.class)
                 .buildSessionFactory()
                 ;
         }
