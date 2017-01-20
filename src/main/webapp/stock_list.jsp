@@ -1,5 +1,5 @@
 <%@ page
-    import="com.katkam.entity.Manufacturer"
+    import="com.katkam.entity.Stock"
     import="java.util.List"
     %>
 <!doctype html><html>

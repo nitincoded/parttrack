@@ -52,6 +52,12 @@ public class StockController {
             mv.addObject("m", m);
         }
 
+        List<Part> parts = sess.createCriteria(Part.class).list();
+        List<Store> stores = sess.createCriteria(Store.class).list();
+
+        mv.addObject("parts", parts);
+        mv.addObject("stores", stores);
+
         return mv;
     }
 

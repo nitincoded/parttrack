@@ -1,4 +1,6 @@
-<%@ page import="com.katkam.entity.Manufacturer" %>
+<%@ page
+    import="com.katkam.entity.Store"
+    %>
 <!doctype html><html>
 <head>
 <%@ include file="tpl_head.jsp" %>

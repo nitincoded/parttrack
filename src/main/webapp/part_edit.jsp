@@ -31,6 +31,7 @@ Part m = (Part) request.getAttribute("m");
     <div class="form-group">
         <label>UoM</label>
         <select name="uom_id">
+            <option></option>
             <% for (Uom iterUom : (List<Uom>) request.getAttribute("uoms")) { %>
             <option value="<%= iterUom.getId() %>" <%= m.getUom()==null?"":(m.getUom().getId()!=iterUom.getId()?"":"selected") %> ><%= iterUom.getName() %></option>
             <% } %>
@@ -39,6 +40,7 @@ Part m = (Part) request.getAttribute("m");
     <div class="form-group">
         <label>Manufacturer</label>
         <select name="manufacturer_id">
+            <option></option>
             <% for (Manufacturer iterManufacturer : (List<Manufacturer>) request.getAttribute("manufacturers")) { %>
             <option value="<%= iterManufacturer.getId() %>" <%= m.getManufacturer()==null?"":(m.getManufacturer().getId()!=iterManufacturer.getId()?"":"selected") %> ><%= iterManufacturer.getName() %></option>
             <% } %>

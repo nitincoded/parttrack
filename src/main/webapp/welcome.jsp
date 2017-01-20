@@ -18,6 +18,12 @@
     <li>
         <a href="part">Parts</a>
     </li>
+    <li>
+        <a href="store">Store</a>
+    </li>
+    <li>
+        <a href="stock">Stock</a>
+    </li>
 </ul>
 
 </div>

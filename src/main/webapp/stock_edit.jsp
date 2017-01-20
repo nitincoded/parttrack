@@ -1,4 +1,9 @@
-<%@ page import="com.katkam.entity.Manufacturer" %>
+<%@ page
+    import="java.util.List"
+    import="com.katkam.entity.Stock"
+    import="com.katkam.entity.Store"
+    import="com.katkam.entity.Part"
+    %>
 <!doctype html><html>
 <head>
 <%@ include file="tpl_head.jsp" %>
@@ -22,17 +27,61 @@ Stock m = (Stock) request.getAttribute("m");
     <div class="form-group">
         <label>Store</label>
         <select name="store_id">
-            <% for (Store iterStore : (List<Store>) request.getAttribute("stores")) { %>
-            <option value="<%= iterStore.getId() %>" <%= m.getStore()==null?"":(m.getStore().getId()!=iterStore.getId()?"":"selected") %> ><%= iterStore.getName() %></option>
-            <% } %>
+            <option></option>
+            <%
+            List<Store> stores = null;
+            if (request!=null && request.getAttribute("stores") != null) {
+            stores = (List<Store>) request.getAttribute("stores");
+                for (Store iterStore : stores) {
+            %>
+                <option
+                    value="<%= iterStore==null?"":iterStore.getId() %>"
+                     <%=
+                     (m==null||m.getStore()==null||iterStore==null)
+                     ? ""
+                     : (
+                        m.getStore().getId()!=iterStore.getId()
+                        ? ""
+                        : "selected"
+                        )
+                     %>
+                     >
+                    <%= iterStore==null?"":iterStore.getName() %>
+                </option>
+            <%
+                }
+            }
+            %>
         </select>
     </div>
     <div class="form-group">
         <label>Part</label>
         <select name="part_id">
-            <% for (Part iterPart : (List<Part>) request.getAttribute("parts")) { %>
-            <option value="<%= iterPart.getId() %>" <%= m.getPart()==null?"":(m.getPart().getId()!=iterPart.getId()?"":"selected") %> ><%= iterPart.getName() %></option>
-            <% } %>
+            <option></option>
+            <%
+            List<Part> parts = null;
+            if (request!=null && request.getAttribute("parts") != null) {
+            parts = (List<Part>) request.getAttribute("parts");
+                for (Part iterPart : parts) {
+            %>
+                <option
+                    value="<%= iterPart==null?"":iterPart.getId() %>"
+                     <%=
+                     (m==null||m.getPart()==null||iterPart==null)
+                     ? ""
+                     : (
+                        m.getPart().getId()!=iterPart.getId()
+                        ? ""
+                        : "selected"
+                        )
+                     %>
+                     >
+                    <%= iterPart==null?"":iterPart.getName() %>
+                </option>
+            <%
+                }
+            }
+            %>
         </select>
     </div>
     <div class="form-group">
@@ -45,7 +94,7 @@ Stock m = (Stock) request.getAttribute("m");
 </form>
 
 <%
-if (m!=null && m.getQty==0) { //will the double match zero?
+if (m!=null && m.getQty()==0) { //will the double match zero?
 %>
 <form method="post" action="stock-delete">
     <input type="hidden" name="id" value="<%= m.getId() %>" />
