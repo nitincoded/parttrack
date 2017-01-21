@@ -33,7 +33,7 @@ for (Stock iterModel : lst) {
         <td><%= iterModel.getPart().getName() %></td>
         <td><%= iterModel.getQty() %></td>
         <td>
-            <a href="stock-edit?id=<%= iterModel.getId() %>">Edit</a>
+            <a href="stock-edit?id=<%= iterModel.getId() %>">Stock Adjustment (Edit)</a>
         </td>
     </tr>
 <%

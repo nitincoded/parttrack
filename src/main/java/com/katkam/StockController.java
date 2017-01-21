@@ -89,19 +89,23 @@ public class StockController {
 
         xact.setStore(a_stock.getStore());
         xact.setPart(a_stock.getPart());
+        xact.setDate(new java.util.Date());
 
         if (a_stock.getId()==-1) {
             a_stock.setId(0);
             xact.setQty(a_stock.getQty());
             sess.save(a_stock);
         } else {
-            xact.setQty(sess.byId(Stock.class).load(a_stock.getId()).getQty() - a_stock.getQty());
-            sess.save(xact);
+            xact.setQty(a_stock.getQty() - sess.byId(Stock.class).load(a_stock.getId()).getQty());
             sess.merge(a_stock);
         }
+
+        sess.save(xact);
 
         t.commit();
 
         return "redirect:/stock";
     }
+
+    //TODO: Add direct issue without pick ticket
 }
