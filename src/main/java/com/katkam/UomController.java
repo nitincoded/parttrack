@@ -68,16 +68,16 @@ public class UomController {
     @RequestMapping(value = "/uom-save", method = RequestMethod.POST)
     public String postSave(
             @ModelAttribute
-                    Uom a_mfg
+                    Uom a_m
     ) {
         //sess.merge(a_mfg);
         Transaction t = sess.beginTransaction();
 
-        if (a_mfg.getId()==-1) {
-            a_mfg.setId(0);
-            sess.save(a_mfg);
+        if (a_m.getId()==-1) {
+            a_m.setId(0);
+            sess.save(a_m);
         } else {
-            sess.merge(a_mfg);
+            sess.merge(a_m);
             //sess.update(a_mfg);
         }
 

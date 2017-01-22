@@ -86,7 +86,7 @@ public class PartController {
 
     @RequestMapping(value = "/part-save", method = RequestMethod.POST)
     public String postSave(
-        @ModelAttribute Part a_mfg,
+        @ModelAttribute Part a_m,
         @RequestParam(name = "uom_id") int uom_id,
         @RequestParam(name = "manufacturer_id") Integer manufacturer_id
     ) {
@@ -108,16 +108,16 @@ public class PartController {
         //sess.merge(a_mfg);
         Transaction t = sess.beginTransaction();
 
-        a_mfg.setUom(sess.byId(Uom.class).load(uom_id));
+        a_m.setUom(sess.byId(Uom.class).load(uom_id));
         if (manufacturer_id != null) {
-            a_mfg.setManufacturer(sess.byId(Manufacturer.class).load(manufacturer_id));
+            a_m.setManufacturer(sess.byId(Manufacturer.class).load(manufacturer_id));
         }
 
-        if (a_mfg.getId()==-1) {
-            a_mfg.setId(0);
-            sess.save(a_mfg);
+        if (a_m.getId()==-1) {
+            a_m.setId(0);
+            sess.save(a_m);
         } else {
-            sess.merge(a_mfg);
+            sess.merge(a_m);
             //sess.update(a_mfg);
         }
 

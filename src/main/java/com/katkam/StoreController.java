@@ -66,15 +66,15 @@ public class StoreController {
     @RequestMapping(value = "/store-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
-        Store a_store
+        Store a_m
     ) {
         Transaction t = sess.beginTransaction();
 
-        if (a_store.getId()==-1) {
-            a_store.setId(0);
-            sess.save(a_store);
+        if (a_m.getId()==-1) {
+            a_m.setId(0);
+            sess.save(a_m);
         } else {
-            sess.merge(a_store);
+            sess.merge(a_m);
         }
 
         t.commit();

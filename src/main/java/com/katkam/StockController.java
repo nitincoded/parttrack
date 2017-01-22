@@ -76,7 +76,7 @@ public class StockController {
 
     @RequestMapping(value = "/stock-save", method = RequestMethod.POST)
     public String postSave(
-        @ModelAttribute Stock a_stock,
+        @ModelAttribute Stock a_m,
         @RequestParam(name = "store_id") int store_id,
         @RequestParam(name = "part_id") int part_id
     ) {
@@ -84,20 +84,20 @@ public class StockController {
 
         Xact xact = new Xact();
 
-        a_stock.setStore(sess.byId(Store.class).load(store_id));
-        a_stock.setPart(sess.byId(Part.class).load(part_id));
+        a_m.setStore(sess.byId(Store.class).load(store_id));
+        a_m.setPart(sess.byId(Part.class).load(part_id));
 
-        xact.setStore(a_stock.getStore());
-        xact.setPart(a_stock.getPart());
+        xact.setStore(a_m.getStore());
+        xact.setPart(a_m.getPart());
         xact.setDate(new java.util.Date());
 
-        if (a_stock.getId()==-1) {
-            a_stock.setId(0);
-            xact.setQty(a_stock.getQty());
-            sess.save(a_stock);
+        if (a_m.getId()==-1) {
+            a_m.setId(0);
+            xact.setQty(a_m.getQty());
+            sess.save(a_m);
         } else {
-            xact.setQty(a_stock.getQty() - sess.byId(Stock.class).load(a_stock.getId()).getQty());
-            sess.merge(a_stock);
+            xact.setQty(a_m.getQty() - sess.byId(Stock.class).load(a_m.getId()).getQty());
+            sess.merge(a_m);
         }
 
         sess.save(xact);

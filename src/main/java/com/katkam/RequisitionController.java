@@ -1,6 +1,6 @@
 package com.katkam;
 
-import com.katkam.entity.PickticketHeader;
+import com.katkam.entity.RequisitionHeader;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -14,58 +14,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Developer on 1/21/17.
+ * Created by Developer on 1/22/17.
  */
 @Controller
-public class PickticketController {
+public class RequisitionController {
     Session sess = GrizzlyHelper.getSession();
 
-    @RequestMapping(value = "/pickticket-list", method = RequestMethod.GET)
+    @RequestMapping(value = "/requisition-list", method = RequestMethod.GET)
     public ModelAndView getList() {
-        ModelAndView mv = new ModelAndView("pickticket_list");
+        ModelAndView mv = new ModelAndView("requisition_list");
         mv.addObject("list", getListContent());
         return mv;
     }
 
-    private List<PickticketHeader> getListContent() {
-        List<PickticketHeader> lstRet = new ArrayList<PickticketHeader>();
-        lstRet = sess.createCriteria(PickticketHeader.class).list();
+    private List<RequisitionHeader> getListContent() {
+        List<RequisitionHeader> lstRet = new ArrayList<RequisitionHeader>();
+        lstRet = sess.createCriteria(RequisitionHeader.class).list();
         return lstRet;
     }
 
-    @RequestMapping(value = "/pickticket", method = RequestMethod.GET)
-    public String getIndex() { return "pickticket_index"; }
+    @RequestMapping(value = "/requisition", method = RequestMethod.GET)
+    public String getIndex() {
+        return "requisition_index";
+    }
 
-    @RequestMapping(value = "/pickticket-edit", method = RequestMethod.GET)
+    @RequestMapping(value = "/requisition-edit", method = RequestMethod.GET)
     public ModelAndView getEdit(
             @RequestParam(name = "id", defaultValue = "-1")
                     int a_id
     ) {
-        ModelAndView mv = new ModelAndView("pickticket_edit");
-        if (a_id==-1) {
+        ModelAndView mv = new ModelAndView("requisition_edit");
+
+        if (a_id == -1) {
             //mv.addObject("m", null);
         } else {
-            PickticketHeader m = sess.byId(PickticketHeader.class).load(a_id);
+            RequisitionHeader m = sess.byId(RequisitionHeader.class).load(a_id);
             mv.addObject("m", m);
         }
+
         return mv;
     }
 
-    @RequestMapping(value = "/pickticket-delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/requisition-delete", method = RequestMethod.POST)
     public String postDelete(@RequestParam("id") int a_id) {
-        PickticketHeader m = sess.byId(PickticketHeader.class).load(a_id);
+        RequisitionHeader m = sess.byId(RequisitionHeader.class).load(a_id);
 
         Transaction t = sess.beginTransaction();
         sess.delete(m);
         t.commit();
 
-        return "redirect:/pickticket-list";
+        return "redirect:/requisition-list";
     }
 
-    @RequestMapping(value = "/pickticket-save", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/requisition-save", method = RequestMethod.POST)
     public String postSave(
-            @ModelAttribute
-            PickticketHeader a_m
+        @ModelAttribute
+        RequisitionHeader a_m
     ) {
         Transaction t = sess.beginTransaction();
 
@@ -78,8 +83,8 @@ public class PickticketController {
 
         t.commit();
 
-        return "redirect:/pickticket";
+        return "redirect:/requisition";
     }
 
-    //TODO Add PickticketLine functions
+    //TODO Add RequisitionLine functions
 }
