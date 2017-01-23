@@ -24,6 +24,12 @@
     <li>
         <a href="stock">Stock</a>
     </li>
+    <li>
+        <a href="pickticket">Pick ticket</a>
+    </li>
+    <li>
+        <a href="requisition">Requisition</a>
+    </li>
 </ul>
 
 </div>
