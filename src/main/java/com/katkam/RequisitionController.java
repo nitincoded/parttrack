@@ -1,6 +1,8 @@
 package com.katkam;
 
+import com.katkam.entity.Part;
 import com.katkam.entity.RequisitionHeader;
+import com.katkam.entity.RequisitionLine;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +53,10 @@ public class RequisitionController {
         } else {
             RequisitionHeader m = sess.byId(RequisitionHeader.class).load(a_id);
             mv.addObject("m", m);
+            List<RequisitionLine> lines = (List<RequisitionLine>) sess.createQuery("from RequisitionLine where header_id = :code").setParameter("code", a_id).list();
+            mv.addObject("lines", lines);
+            List<Part> parts = sess.createCriteria(Part.class).list();
+            mv.addObject("parts", parts);
         }
 
         return mv;
@@ -66,6 +73,17 @@ public class RequisitionController {
         return "redirect:/requisition-list";
     }
 
+
+    @RequestMapping(value = "/requisitionline-delete", method = RequestMethod.POST)
+    public String postDeleteLine(@RequestParam("id") int a_id) {
+        RequisitionLine m = sess.byId(RequisitionLine.class).load(a_id);
+
+        Transaction t = sess.beginTransaction();
+        sess.delete(m);
+        t.commit();
+
+        return "redirect:/requisition-list"; //TODO redirect to the same requisition
+    }
 
     @RequestMapping(value = "/requisition-save", method = RequestMethod.POST)
     public String postSave(
@@ -84,6 +102,35 @@ public class RequisitionController {
         t.commit();
 
         return "redirect:/requisition";
+    }
+
+    @RequestMapping(value = "/requisitionline-save", method = RequestMethod.POST)
+    public String postSaveLine(
+//        HttpServletRequest request
+        @RequestParam("header_id")
+        int header_id,
+        @RequestParam("part_id")
+        int part_id,
+        @RequestParam("qty")
+        double qty
+    ) {
+//        int header_id = Integer.parseInt(request.getParameter("header_id"));
+//        int part_id = Integer.parseInt(request.getParameter("part_id"));
+//        double qty = Double.parseDouble(request.getParameter("qty"));
+
+        Transaction t = sess.beginTransaction();
+
+        RequisitionLine rl = new RequisitionLine();
+        rl.setQty(qty);
+        rl.setPart(sess.byId(Part.class).load(part_id));
+        rl.setHeader(sess.byId(RequisitionHeader.class).load(header_id));
+        //TODO handle case when same part is already in the list
+
+        sess.save(rl);
+
+        t.commit();
+
+        return "redirect:/requisition"; //TODO redirect to the same requisition
     }
 
     //TODO Add RequisitionLine functions

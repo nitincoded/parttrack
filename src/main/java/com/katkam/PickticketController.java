@@ -1,6 +1,9 @@
 package com.katkam;
 
+import com.katkam.entity.Part;
 import com.katkam.entity.PickticketHeader;
+import com.katkam.entity.PickticketLine;
+import com.katkam.entity.RequisitionLine;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -47,6 +50,10 @@ public class PickticketController {
         } else {
             PickticketHeader m = sess.byId(PickticketHeader.class).load(a_id);
             mv.addObject("m", m);
+            List<RequisitionLine> lines = (List<RequisitionLine>) sess.createQuery("from PickticketLine where header_id = :code").setParameter("code", a_id).list();
+            mv.addObject("lines", lines);
+            List<Part> parts = sess.createCriteria(Part.class).list();
+            mv.addObject("parts", parts);
         }
         return mv;
     }
@@ -60,6 +67,17 @@ public class PickticketController {
         t.commit();
 
         return "redirect:/pickticket-list";
+    }
+
+    @RequestMapping(value = "/pickticketline-delete", method = RequestMethod.POST)
+    public String postDeleteLine(@RequestParam("id") int a_id) {
+        PickticketLine m = sess.byId(PickticketLine.class).load(a_id);
+
+        Transaction t = sess.beginTransaction();
+        sess.delete(m);
+        t.commit();
+
+        return "redirect:/pickticket-list"; //TODO return to the pickticket that the user was editing
     }
 
     @RequestMapping(value = "/pickticket-save", method = RequestMethod.POST)
@@ -81,5 +99,27 @@ public class PickticketController {
         return "redirect:/pickticket";
     }
 
-    //TODO Add PickticketLine functions
+    @RequestMapping(value = "/pickticketline-save", method = RequestMethod.POST)
+    public String postSaveLine(
+            @RequestParam("header_id")
+                    int header_id,
+            @RequestParam("part_id")
+                    int part_id,
+            @RequestParam("qty")
+                    double qty
+    ) {
+        Transaction t = sess.beginTransaction();
+
+        PickticketLine pl = new PickticketLine();
+        pl.setPart(sess.byId(Part.class).load(part_id));
+        pl.setHeader(sess.byId(PickticketHeader.class).load(header_id));
+        pl.setQty(qty);
+        //TODO handle case when same part is already in the list
+
+        sess.save(pl);
+
+        t.commit();
+
+        return "redirect:/pickticket-list"; //TODO return to the pickticket that the user was editing
+    }
 }

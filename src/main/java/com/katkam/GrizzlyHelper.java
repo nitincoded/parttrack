@@ -37,9 +37,9 @@ public class GrizzlyHelper {
                 .addAnnotatedClass(Stock.class)
                 .addAnnotatedClass(Xact.class)
                 .addAnnotatedClass(RequisitionHeader.class)
-//                .addAnnotatedClass(RequisitionLine.class)
+                .addAnnotatedClass(RequisitionLine.class)
                 .addAnnotatedClass(PickticketHeader.class)
-//                .addAnnotatedClass(PickticketLine.class)
+                .addAnnotatedClass(PickticketLine.class)
                 .buildSessionFactory()
                 ;
         }

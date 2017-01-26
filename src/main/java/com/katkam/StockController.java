@@ -1,9 +1,6 @@
 package com.katkam;
 
-import com.katkam.entity.Part;
-import com.katkam.entity.Stock;
-import com.katkam.entity.Store;
-import com.katkam.entity.Xact;
+import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -108,4 +105,13 @@ public class StockController {
     }
 
     //TODO: Add direct issue without pick ticket
+
+    @RequestMapping(value = "/stock-issue-pickticket-list")
+    public ModelAndView stockIssuePickticketList() {
+        ModelAndView mv = new ModelAndView("stock_issue_pickticket_list");
+        List<PickticketHeader> picktickets = sess.createCriteria(PickticketHeader.class).list();
+        //TODO Do not include picktickets with all items already issued
+        mv.addObject("picktickets", picktickets);
+        return mv;
+    }
 }

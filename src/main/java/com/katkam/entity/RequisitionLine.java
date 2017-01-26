@@ -16,7 +16,8 @@ public class RequisitionLine {
     @JoinColumn(name = "header_id")
     private RequisitionHeader header;
 
-    @Column
+    @ManyToOne
+    @JoinColumn(name = "part_id")
     private Part part;
 
     @Column

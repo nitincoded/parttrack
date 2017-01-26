@@ -8,6 +8,10 @@
 
 <h1>Part Track</h1>
 
+
+
+<h2>Master Data</h2>
+
 <ul>
     <li>
         <a href="uom">UoM</a>
@@ -21,11 +25,26 @@
     <li>
         <a href="store">Store</a>
     </li>
+</ul>
+
+
+
+<h2>Store / Procurement</h2>
+
+<ul>
     <li>
         <a href="stock">Stock</a>
     </li>
     <li>
         <a href="pickticket">Pick ticket</a>
+    </li>
+    <li>
+        Stock Issue
+        <ul>
+            <li>
+                <a href="stock-issue-pickticket-list">Stock Issue - Against Pick Ticket</a>
+            </li>
+        </ul>
     </li>
     <li>
         <a href="requisition">Requisition</a>
