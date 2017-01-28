@@ -14,6 +14,10 @@
 
 <h1>Issue Stock - Select Items from Pick Ticket</h1>
 
+<p>
+    <a href="stock-issue-pickticket-list">Back</a>
+</p>
+
 <table class="table table-striped table-bordered table-hover table-condensed">
     <tr>
         <th>Part Code</th>
@@ -23,17 +27,17 @@
         <th>UOM</th>
         <th>Actions</th>
     </tr>
-    <c:forEach var="row" items="${picktickets}">
+    <c:forEach var="row" items="${lines}">
         <tr>
             <td><c:out value="${row.part.id}" /></td>
             <td><c:out value="${row.part.name}" /></td>
             <td><c:out value="${row.qty}" /></td>
             <td><c:out value="${row.issued_qty}" /></td>
-            <td>TODO: UOM for Part</td>
+            <td><c:out value="${row.part.uom.name}" /></td>
             <td>
                 <form method="post" action="stock_issue_by_pickticket">
-                    <input type="hidden" name="id" value="" />
-                    <input type="text" name="qty_delta" value="" />
+                    <input type="hidden" name="id" value="${row.id}" />
+                    <input type="text" name="qty_delta" value="0" />
                     <input type="submit" value="Issue/Return" />
                 </form>
             </td>

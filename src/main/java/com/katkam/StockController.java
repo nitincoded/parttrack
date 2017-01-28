@@ -3,6 +3,7 @@ package com.katkam;
 import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -113,5 +114,58 @@ public class StockController {
         //TODO Do not include picktickets with all items already issued
         mv.addObject("picktickets", picktickets);
         return mv;
+    }
+
+    @RequestMapping(value = "/stock-issue-pickticket-select")
+    public ModelAndView stockIssuePickticketSelect(
+        @RequestParam("id") int id
+    ) {
+        ModelAndView mv = new ModelAndView("stock_issue_pickticket_select");
+        List<PickticketLine> lines = sess.createQuery("from PickticketLine where header_id = :code").setParameter("code", id).list();
+        mv.addObject("lines", lines);
+        return mv;
+    }
+
+    @RequestMapping(value = "/stock_issue_by_pickticket")
+    public String postStockIssueAgainstPickticket(
+        @RequestParam("id")
+        int id,
+        @RequestParam("qty_delta")
+        double qty_delta
+    ) {
+        PickticketLine obj = sess.byId(PickticketLine.class).load(id);
+        Xact xact = new Xact();
+
+//        List<Stock> tmpList = sess.createQuery("from Stock where store_id=:store and part_id=:part").setParameter("store", obj.getHeader().getStore().getId()).setParameter("part", obj.getPart().getId()).list();
+//        obj.toString();
+//        Query qry;
+//        qry = sess.createQuery("from Stock where store_id=:store and part_id=:part");
+//        PickticketHeader phdr = obj.getHeader();
+//        phdr.toString();
+//        Store str = phdr.getStore();
+//        str.toString();
+//        qry = qry.setParameter("store", str.getId());
+//        Part prt = obj.getPart();
+//        prt.toString();
+//        qry = qry.setParameter("part", prt.getId());
+//        List<Stock> tmpList = qry.list();
+//        Stock stock = tmpList.get(0);
+
+        Stock stock = (Stock) sess.createQuery("from Stock where store_id=:store and part_id=:part").setParameter("store", obj.getHeader().getStore().getId()).setParameter("part", obj.getPart().getId()).list().get(0);
+        Transaction t = sess.beginTransaction();
+
+        obj.setIssued_qty(obj.getIssued_qty() + qty_delta);
+        xact.setQty(qty_delta);
+        xact.setPart(obj.getPart());
+        xact.setDate(new java.util.Date());
+        stock.setQty(stock.getQty() - qty_delta);
+
+        sess.save(xact);
+        sess.merge(obj);
+        sess.merge(stock);
+
+        t.commit();
+
+        return "redirect:/pickticket-list";
     }
 }

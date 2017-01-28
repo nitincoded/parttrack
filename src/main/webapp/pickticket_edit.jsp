@@ -2,8 +2,13 @@
     import="com.katkam.entity.PickticketHeader"
     import="com.katkam.entity.PickticketLine"
     import="com.katkam.entity.Part"
+    import="com.katkam.entity.Store"
     import="java.util.List"
     %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <!doctype html><html>
 <head>
 <%@ include file="tpl_head.jsp" %>
@@ -27,6 +32,23 @@ PickticketHeader m = (PickticketHeader) request.getAttribute("m");
     <div class="form-group">
         <label>Pick Ticket</label>
         <input type="text" name="name" value="<%= m==null?"":m.getName() %>" autofocus />
+    </div>
+    <div class="form-group">
+        <label>Store</label>
+        <select name="store_id">
+            <c:forEach var="row" items="${stores}">
+                <c:if test="${m != null && m.store_id == row.id}">
+                    <option value="${row.id}" selected>
+                        <c:out value="${row.name}" />
+                    </option>
+                </c:if>
+                <c:if test="${m == null || m.store_id != row.id}">
+                    <option value="${row.id}">
+                        <c:out value="${row.name}" />
+                    </option>
+                </c:if>
+            </c:forEach>
+        </select>
     </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />

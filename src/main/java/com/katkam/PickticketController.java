@@ -1,9 +1,6 @@
 package com.katkam;
 
-import com.katkam.entity.Part;
-import com.katkam.entity.PickticketHeader;
-import com.katkam.entity.PickticketLine;
-import com.katkam.entity.RequisitionLine;
+import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -41,10 +38,12 @@ public class PickticketController {
 
     @RequestMapping(value = "/pickticket-edit", method = RequestMethod.GET)
     public ModelAndView getEdit(
-            @RequestParam(name = "id", defaultValue = "-1")
-                    int a_id
+        @RequestParam(name = "id", defaultValue = "-1")
+        int a_id
     ) {
         ModelAndView mv = new ModelAndView("pickticket_edit");
+        List<Store> stores = sess.createCriteria(Store.class).list();
+        mv.addObject("stores", stores);
         if (a_id==-1) {
             //mv.addObject("m", null);
         } else {
@@ -83,10 +82,13 @@ public class PickticketController {
     @RequestMapping(value = "/pickticket-save", method = RequestMethod.POST)
     public String postSave(
             @ModelAttribute
-            PickticketHeader a_m
+            PickticketHeader a_m,
+            @RequestParam("store_id")
+            int store_id
     ) {
         Transaction t = sess.beginTransaction();
 
+        a_m.setStore(sess.byId(Store.class).load(store_id));
         if (a_m.getId()==-1) {
             a_m.setId(0);
             sess.save(a_m);

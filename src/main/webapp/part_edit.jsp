@@ -4,6 +4,10 @@
     import="com.katkam.entity.Manufacturer"
     import="java.util.List"
     %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <!doctype html><html>
 <head>
 <%@ include file="tpl_head.jsp" %>
