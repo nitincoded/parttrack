@@ -39,7 +39,7 @@
         <a href="pickticket">Pick ticket</a>
     </li>
     <li>
-        Stock Issue
+        <a href="stock-issue">Stock Issue</a>
         <ul>
             <li>
                 <a href="stock-issue-pickticket-list">Stock Issue - Against Pick Ticket</a>

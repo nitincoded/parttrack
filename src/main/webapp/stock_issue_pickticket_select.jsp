@@ -15,7 +15,7 @@
 <h1>Issue Stock - Select Items from Pick Ticket</h1>
 
 <p>
-    <a href="stock-issue-pickticket-list">Back</a>
+    <a href="stock-issue-pickticket-list"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
 </p>
 
 <table class="table table-striped table-bordered table-hover table-condensed">

@@ -168,4 +168,7 @@ public class StockController {
 
         return "redirect:/pickticket-list";
     }
+
+    @RequestMapping("/stock-issue")
+    public ModelAndView getStockIssueOverview() { return new ModelAndView("stock_issue"); }
 }

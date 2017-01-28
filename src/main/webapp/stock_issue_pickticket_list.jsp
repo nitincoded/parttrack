@@ -14,6 +14,10 @@
 
 <h1>Issue Stock - Against Pick Ticket</h1>
 
+<p>
+    <a href="stock-issue"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
+</p>
+
 <h2>Pick Tickets</h2>
 
 <table class="table table-striped table-bordered table-hover table-condensed">
