@@ -44,6 +44,9 @@
             <li>
                 <a href="stock-issue-pickticket-list">Stock Issue - Against Pick Ticket</a>
             </li>
+            <li>
+                <a href="stock-issue-direct">Stock Issue - Direct</a>
+            </li>
         </ul>
     </li>
     <li>

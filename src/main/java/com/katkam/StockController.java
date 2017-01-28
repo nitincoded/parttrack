@@ -92,9 +92,13 @@ public class StockController {
         if (a_m.getId()==-1) {
             a_m.setId(0);
             xact.setQty(a_m.getQty());
+            xact.setNarration("Stock input entry");
+            xact.setTypeCode("INPUTSTOCK");
             sess.save(a_m);
         } else {
             xact.setQty(a_m.getQty() - sess.byId(Stock.class).load(a_m.getId()).getQty());
+            xact.setNarration("Stock adjustment entry");
+            xact.setTypeCode("STOCKADJ");
             sess.merge(a_m);
         }
 
@@ -158,6 +162,8 @@ public class StockController {
         xact.setQty(qty_delta);
         xact.setPart(obj.getPart());
         xact.setDate(new java.util.Date());
+        xact.setNarration("Issued against pick ticket");
+        xact.setTypeCode("ISSUEWPICTIC");
         stock.setQty(stock.getQty() - qty_delta);
 
         sess.save(xact);
@@ -171,4 +177,37 @@ public class StockController {
 
     @RequestMapping("/stock-issue")
     public ModelAndView getStockIssueOverview() { return new ModelAndView("stock_issue"); }
+
+    @RequestMapping("/stock-issue-direct")
+    public ModelAndView getStockIssueDirect() {
+        ModelAndView mv = new ModelAndView("stock_issue_direct");
+        List<Stock> stocklist = sess.createCriteria(Stock.class).list();
+        mv.addObject("list", stocklist);
+        return mv;
+    }
+
+    @RequestMapping("/stock-issue-direct-save")
+    public String postStockIssueDirect(
+        @RequestParam("id")
+        int id,
+        @RequestParam("qty_delta")
+        double qty_delta
+    ) {
+        Stock st = sess.byId(Stock.class).load(id);
+        Xact xact = new Xact();
+
+        st.setQty(st.getQty() - qty_delta);
+        xact.setQty(qty_delta);
+        xact.setPart(st.getPart());
+        xact.setDate(new java.util.Date());
+        xact.setNarration("Direct issue");
+        xact.setTypeCode("ISSUEDIRECT");
+
+        Transaction t = sess.beginTransaction();
+        sess.merge(st);
+        sess.save(xact);
+        t.commit();
+
+        return "redirect:/stock-issue-direct";
+    }
 }

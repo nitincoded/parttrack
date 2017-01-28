@@ -37,12 +37,12 @@ PickticketHeader m = (PickticketHeader) request.getAttribute("m");
         <label>Store</label>
         <select name="store_id">
             <c:forEach var="row" items="${stores}">
-                <c:if test="${m != null && m.store_id == row.id}">
+                <c:if test="${m != null && m.store.id == row.id}">
                     <option value="${row.id}" selected>
                         <c:out value="${row.name}" />
                     </option>
                 </c:if>
-                <c:if test="${m == null || m.store_id != row.id}">
+                <c:if test="${m == null || m.store.id != row.id}">
                     <option value="${row.id}">
                         <c:out value="${row.name}" />
                     </option>

@@ -33,6 +33,17 @@ public class Xact {
     @Column
     private String refno;
 
+    @Column
+    private String typeCode;
+
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
 
     public long getId() {
         return id;
