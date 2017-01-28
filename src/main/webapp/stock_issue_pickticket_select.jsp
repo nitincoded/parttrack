@@ -47,7 +47,7 @@
 
 <form method="post" action="stock_issue_by_pickticket_all">
     <input type="hidden" name="header_id" value="" />
-    <input type="submit" value="Issue All" />
+    <input type="submit" value="Issue All" onclick="alert('Under Construction'); return false;" />
 </form>
 
 </div>
