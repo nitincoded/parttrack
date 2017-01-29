@@ -1,8 +1,7 @@
-package com.katkam;
+package com.katkam.controller;
 
-import com.katkam.entity.Part;
-import com.katkam.entity.RequisitionHeader;
-import com.katkam.entity.RequisitionLine;
+import com.katkam.GrizzlyHelper;
+import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -43,10 +42,15 @@ public class RequisitionController {
 
     @RequestMapping(value = "/requisition-edit", method = RequestMethod.GET)
     public ModelAndView getEdit(
-            @RequestParam(name = "id", defaultValue = "-1")
-                    int a_id
+        @RequestParam(name = "id", defaultValue = "-1")
+        int a_id
     ) {
         ModelAndView mv = new ModelAndView("requisition_edit");
+
+        List<Store> stores = sess.createCriteria(Store.class).list();
+        mv.addObject("stores", stores);
+
+        mv.addObject("r", "rock");
 
         if (a_id == -1) {
             //mv.addObject("m", null);
@@ -88,9 +92,13 @@ public class RequisitionController {
     @RequestMapping(value = "/requisition-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
-        RequisitionHeader a_m
+        RequisitionHeader a_m,
+        @RequestParam("store_id")
+        int store_id
     ) {
         Transaction t = sess.beginTransaction();
+
+        a_m.setStore(sess.byId(Store.class).load(store_id));
 
         if (a_m.getId()==-1) {
             a_m.setId(0);
@@ -125,6 +133,8 @@ public class RequisitionController {
         rl.setPart(sess.byId(Part.class).load(part_id));
         rl.setHeader(sess.byId(RequisitionHeader.class).load(header_id));
         //TODO handle case when same part is already in the list
+
+        //TODO Store attribute
 
         sess.save(rl);
 

@@ -1,5 +1,6 @@
-package com.katkam;
+package com.katkam.controller;
 
+import com.katkam.GrizzlyHelper;
 import com.katkam.entity.Manufacturer;
 import com.katkam.entity.Part;
 import com.katkam.entity.Uom;
@@ -14,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

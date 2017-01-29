@@ -35,6 +35,10 @@
     </c:forEach>
 </table>
 
+<p>
+Item count is <% out.print(((java.util.List<com.katkam.entity.PickticketHeader>)request.getAttribute("picktickets")).size()); %>.
+</p>
+
 </div>
 </body>
 </html>

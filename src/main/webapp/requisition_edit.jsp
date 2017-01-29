@@ -2,6 +2,7 @@
     import="com.katkam.entity.RequisitionHeader"
     import="com.katkam.entity.RequisitionLine"
     import="com.katkam.entity.Part"
+    import="com.katkam.entity.Store"
     import="java.util.List"
     %>
 
@@ -35,6 +36,22 @@ RequisitionHeader m = (RequisitionHeader) request.getAttribute("m");
     <div class="form-group">
         <label>Requisition</label>
         <input type="text" name="name" value="<%= m==null?"":m.getName() %>" autofocus />
+    </div>
+    <div class="form-group">
+        <label>Store</label>
+        <select name="store_id">
+            <option></option>
+            <%
+            if (request.getAttribute("stores") != null)
+            for (Store iterStore : (List<Store>) request.getAttribute("stores")) {
+            %>
+                <option value="<%= iterStore.getId() %>"<%=
+                (m != null && m.getStore() != null && m.getStore().getId() == iterStore.getId()) ? " selected" : ""
+                %>><%= iterStore.getName() %></option>
+            <%
+            }
+            %>
+        </select>
     </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />

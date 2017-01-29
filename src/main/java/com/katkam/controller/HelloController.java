@@ -1,4 +1,4 @@
-package com.katkam;
+package com.katkam.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
