@@ -114,7 +114,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <!-- Deploying the exploded WAR to tomcat with webappDirectory is quicker than deploying the WAR with outputDirectory -->
+                    <!-- Deploying the exploded WAR to tomcat with webappDirectory is quicker than deploying the WAR with outputDirectory, but is sometimes out-of-date -->
                     <outputDirectory>${war.outputdirectory}</outputDirectory>
                     <!--<webappDirectory>${war.outputdirectory}/PartTrack-1.0-SNAPSHOT</webappDirectory>-->
                 </configuration>

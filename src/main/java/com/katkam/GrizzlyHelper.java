@@ -40,6 +40,8 @@ public class GrizzlyHelper {
                 .addAnnotatedClass(RequisitionLine.class)
                 .addAnnotatedClass(PickticketHeader.class)
                 .addAnnotatedClass(PickticketLine.class)
+                .addAnnotatedClass(PurchaseOrderHeader.class)
+                .addAnnotatedClass(PurchaseOrderLine.class)
                 .buildSessionFactory()
                 ;
         }

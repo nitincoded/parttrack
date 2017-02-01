@@ -77,4 +77,7 @@ public class PurchaseOrderHeader {
     public void setDeliverTo(String deliverTo) {
         this.deliverTo = deliverTo;
     }
+
+    public PurchaseOrderHeader() {}
+    public PurchaseOrderHeader(int id, String name) { setId(id); setName(name); }
 }

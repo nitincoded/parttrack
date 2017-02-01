@@ -89,7 +89,7 @@
             <a href="purchase-quotation" onclick="alert('Under Construction'); return false;">Purchase Quotation</a>
         </li>
         <li>
-            <a href="purchase-order">Purchase Order</a>
+            <a href="purchaseorder">Purchase Order</a>
         </li>
         <li>
             <a href="purchase-invoice">Purchase Invoice</a>
