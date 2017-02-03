@@ -1,5 +1,5 @@
 <%@ page
-    import="com.katkam.entity.Customer"
+    import="com.katkam.entity.Employee"
     import="java.util.List"
     %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,10 +13,10 @@
 <body>
 <div class="container">
 
-<h1>Customers</h1>
+<h1>Employers</h1>
 
 <p>
-    <a href="customer"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
+    <a href="employee"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
 </p>
 
 <table class="table table-striped table-bordered table-hover table-condensed">
@@ -30,7 +30,7 @@
             <td><c:out value="${row.id}" /></td>
             <td><c:out value="${row.name}" /></td>
             <td>
-                <a href="customer-edit?id=${row.id}">Edit</a>
+                <a href="employee-edit?id=${row.id}">Edit</a>
             </td>
         </tr>
     </c:forEach>
@@ -38,10 +38,10 @@
 
 <p>
     <%
-        List<Customer> lstCustomers = (List<Customer>) request.getAttribute("list");
+        List<Employee> lstEmployees = (List<Employee>) request.getAttribute("list");
     %>
 
-    Item count is <% out.print(lstCustomers == null ? 0 : lstCustomers.size()); %>.
+    Item count is <% out.print(lstEmployees == null ? 0 : lstEmployees.size()); %>.
 </p>
 
 </div>

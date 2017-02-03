@@ -1,4 +1,4 @@
-<%@ page import="com.katkam.entity.Supplier" %>
+<%@ page import="com.katkam.entity.Employee" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -10,17 +10,17 @@
 <body>
 <div class="container">
 
-<h1>Supplier</h1>
+<h1>Employee</h1>
 
 <p>
-    <a href="supplier"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
+    <a href="employer"><i class="glyphicon glyphicon-chevron-left"></i> Overview</a>
 </p>
 
 <!-- Using enctype multipart form makes Spring MVC see nulls -->
-<form method="post" action="supplier-save">
+<form method="post" action="employee-save">
     <input type="hidden" name="id" value="${m==null ? -1 : m.id }" />
     <div class="form-group">
-        <label>Supplier</label>
+        <label>Employer</label>
         <input type="text" name="name" value="${m==null ? "" : m.name }" autofocus />
     </div>
     <div class="form-group">
@@ -29,7 +29,7 @@
 </form>
 
 <c:if test="${m!=null}">
-    <form method="post" action="supplier-delete">
+    <form method="post" action="employee-delete">
         <input type="hidden" name="id" value="${m.id}" />
         <input type="submit" value="Delete" class="btn btn-default" onclick="return confirm('Do you want to delete this record?')" />
     </form>

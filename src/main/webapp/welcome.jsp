@@ -26,13 +26,13 @@
             <a href="store">Stores</a>
         </li>
         <li>
-            <a href="supplier" onclick="alert('Under Construction'); return false;">Suppliers</a>
+            <a href="supplier">Suppliers</a>
         </li>
         <li>
-            <a href="customer" onclick="alert('Under Construction'); return false;">Customers</a>
+            <a href="customer">Customers</a>
         </li>
         <li>
-            <a href="employee" onclick="alert('Under Construction'); return false;">Employees</a>
+            <a href="employee">Employees</a>
         </li>
     </ul>
 </div>

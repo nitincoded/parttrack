@@ -22,7 +22,7 @@ public class CustomerController {
     @RequestMapping(value = "/customer-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("customer_list");
-        mv.addObject("list", sess.createCriteria(Employee.class).list());
+        mv.addObject("list", sess.createCriteria(Customer.class).list());
         return mv;
     }
 
@@ -36,22 +36,22 @@ public class CustomerController {
     ) {
         ModelAndView mv = new ModelAndView("customer_edit");
         if (a_id==-1) {} else {
-            Employee m = sess.byId(Employee.class).load(a_id);
+            Customer m = sess.byId(Customer.class).load(a_id);
             mv.addObject("m", m);
         }
         return mv;
     }
 
-    @RequestMapping(value = "/employee-delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/customer-delete", method = RequestMethod.POST)
     public String postDelete(@RequestParam("id") int a_id) {
-        Employee m = sess.byId(Employee.class).load(a_id);
+        Customer m = sess.byId(Customer.class).load(a_id);
         Transaction t = sess.beginTransaction();
         sess.delete(m);
         t.commit();
-        return "redirect:/employee";
+        return "redirect:/customer";
     }
 
-    @RequestMapping(value = "/employee-save", method = RequestMethod.POST)
+    @RequestMapping(value = "/customer-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
         Customer m
@@ -66,6 +66,6 @@ public class CustomerController {
         }
 
         t.commit();
-        return "redirect:/employee";
+        return "redirect:/customer";
     }
 }
