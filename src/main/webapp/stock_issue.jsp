@@ -19,6 +19,9 @@
     <li>
         <a href="stock-issue-pickticket-list">Issue Against Pick Ticket</a>
     </li>
+    <li>
+        <a href="stock-issue-direct">Issue Direct</a>
+    </li>
 </ul>
 
 </div>
