@@ -111,7 +111,7 @@
     </ul>
 </div>
 
-<div style="display: none">
+<div>
     <h2>Sales</h2>
 
     <ul>
@@ -130,19 +130,27 @@
     </ul>
 </div>
 
-<div style="display: none">
+<div>
     <h2>Production / Service</h2>
 
     <ul>
         <li>
             <a href="work-order" class="not-done">Work Order</a>
         </li>
+        <li>
+            <a href="production-order" class="not-done">Production Order</a>
+        </li>
         <!--
             FMECA codes in Work Order
             Scheduling, Appointment
+            Preventive Maintenance
+            Production Schedule, Production Plan
         -->
         <li>
             <a href="work-plan" class="not-done">Work Plan</a>
+        </li>
+        <li>
+            <a href="production-plan" class="not-done">Production Plan</a>
         </li>
         <li>
             <a href="work-schedule" class="not-done">Work Schedule</a>
@@ -153,7 +161,7 @@
     </ul>
 </div>
 
-<div style="display: none">
+<div>
     <h2>Call Center</h2>
 
     <ul>
