@@ -30,6 +30,11 @@ for (RequisitionHeader iterModel : lst) {
         <td><%= iterModel.getName() %></td>
         <td>
             <a href="requisition-edit?id=<%= iterModel.getId() %>">Edit</a>
+
+            <form action="purchaseorder-from-requisition" method="post">
+                <input type="hidden" name="id" value="<%= iterModel.getId() %>" />
+                <input type="submit" value="Generate PO" />
+            </form>
         </td>
     </tr>
 <%

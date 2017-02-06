@@ -2,6 +2,7 @@ package com.katkam.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Developer on 1/21/17.
@@ -28,6 +29,18 @@ public class RequisitionHeader {
 
     @Column
     private String deliverTo;
+
+    @OneToMany
+    @JoinColumn(name = "header_id")
+    private Set<RequisitionLine> lines;
+
+    public Set<RequisitionLine> getLines() {
+        return lines;
+    }
+
+    public void setLines(Set<RequisitionLine> lines) {
+        this.lines = lines;
+    }
 
     public int getId() {
         return id;

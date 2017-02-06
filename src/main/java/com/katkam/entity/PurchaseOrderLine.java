@@ -23,6 +23,17 @@ public class PurchaseOrderLine {
     @Column
     private double qty;
 
+    @Column
+    private double received_qty;
+
+
+    public double getReceived_qty() {
+        return received_qty;
+    }
+
+    public void setReceived_qty(double received_qty) {
+        this.received_qty = received_qty;
+    }
 
     public int getId() {
         return id;

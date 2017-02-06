@@ -1,10 +1,7 @@
 package com.katkam.controller;
 
 import com.katkam.GrizzlyHelper;
-import com.katkam.entity.Part;
-import com.katkam.entity.PurchaseOrderHeader;
-import com.katkam.entity.PurchaseOrderLine;
-import com.katkam.entity.Store;
+import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -123,5 +121,40 @@ public class PurchaseOrderController {
         return "redirect:/purchaseorder";
     }
 
-    //TODO Convert PR to PO
+    @RequestMapping(value = "/purchaseorder-from-requisition", method = RequestMethod.POST)
+    public String postGeneratePoFromPr(
+        @RequestParam("id")
+        int id
+    ) {
+        PurchaseOrderHeader purchaseOrderHeader = new PurchaseOrderHeader();
+        List<PurchaseOrderLine> purchaseOrderLines = new ArrayList<PurchaseOrderLine>();
+
+        RequisitionHeader requisitionHeader = sess.byId(RequisitionHeader.class).load(id);
+        purchaseOrderHeader.setSubmittedDate(new java.util.Date());
+        //purchaseOrderHeader.setSubmittedDate(requisitionHeader.getSubmittedDate());
+        purchaseOrderHeader.setStore(requisitionHeader.getStore());
+        purchaseOrderHeader.setName(requisitionHeader.getName());
+        purchaseOrderHeader.setRefno(requisitionHeader.getRefno());
+        purchaseOrderHeader.setDeliverTo(requisitionHeader.getDeliverTo());
+
+        for (RequisitionLine iterLine : requisitionHeader.getLines()) {
+            PurchaseOrderLine iterPoLine = new PurchaseOrderLine();
+            iterPoLine.setQty(iterLine.getQty());
+            iterPoLine.setPart(iterLine.getPart());
+            iterPoLine.setHeader(purchaseOrderHeader);
+            purchaseOrderLines.add(iterPoLine);
+        }
+
+        Transaction t = sess.beginTransaction();
+
+        sess.save(purchaseOrderHeader);
+        for (PurchaseOrderLine iterPoLine : purchaseOrderLines) {
+            sess.save(iterPoLine);
+        }
+
+        //TODO Associate PR to PO
+
+        t.commit();
+        return "redirect:/purchaseorder";
+    }
 }

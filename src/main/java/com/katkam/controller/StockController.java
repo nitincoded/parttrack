@@ -110,7 +110,51 @@ public class StockController {
         return "redirect:/stock";
     }
 
-    //TODO: Add direct issue without pick ticket
+    @RequestMapping(value = "/stock-receipt-purchase-order-list")
+    public ModelAndView stockReceiptPurchaseOrderList() {
+        ModelAndView mv = new ModelAndView("stock_receipt_purchase_order_list");
+        List<PurchaseOrderHeader> pos = sess.createCriteria(PurchaseOrderHeader.class).list();
+        //TODO Do not include POs with all items already received
+        mv.addObject("pos", pos);
+        return mv;
+    }
+
+    @RequestMapping(value = "/stock-receipt-purchase-order-select")
+    public ModelAndView stockReceiptPurchaseOrderSelect(
+        @RequestParam("id") int id
+    ) {
+        ModelAndView mv = new ModelAndView("stock_receipt_purchase_order_select");
+        List<PurchaseOrderLine> lines = sess.createQuery("from PurchaseOrderLine where header_id = :code").setParameter("code", id).list();
+        mv.addObject("lines", lines);
+        return mv;
+    }
+
+    public String postStockReceiptAgainstPurchaseOrder(
+        @RequestParam("id") int id,
+        @RequestParam("qty_delta") double qty_delta
+    ) {
+        PurchaseOrderLine obj = sess.byId(PurchaseOrderLine.class).load(id);
+        Xact xact = new Xact();
+
+        Stock stock = (Stock) sess.createQuery("from Stock where store_id=:store and part_id=:part").setParameter("store", obj.getHeader().getStore().getId()).setParameter("part", obj.getPart().getId()).list().get(0);
+        Transaction t = sess.beginTransaction();
+        obj.setReceived_qty(obj.getReceived_qty() + qty_delta);
+        xact.setQty(qty_delta);
+        xact.setPart(obj.getPart());
+        xact.setDate(new java.util.Date());
+        xact.setNarration("Received against PO");
+        xact.setTypeCode("RECVWPO");
+        stock.setQty(stock.getQty() + qty_delta);
+
+        sess.save(xact);
+        sess.merge(obj);
+        sess.merge(stock);
+
+        t.commit();
+
+
+        return "redirect:/purchaseorder-list";
+    }
 
     @RequestMapping(value = "/stock-issue-pickticket-list")
     public ModelAndView stockIssuePickticketList() {

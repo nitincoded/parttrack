@@ -79,7 +79,7 @@
             <a href="stock-receipt" class="not-done">Stock Receipt / Return</a>
             <ul>
                 <li>
-                    <a href="#" class="not-done">Stock Receipt / Return - Against Purchase Order</a>
+                    <a href="stock-receipt-purchase-order-list">Stock Receipt / Return - Against Purchase Order</a>
                 </li>
                 <li>
                     <a href="#" class="not-done">Stock Receipt / Return - Direct</a>
