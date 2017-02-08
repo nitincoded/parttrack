@@ -220,6 +220,9 @@ public class StockController {
         return "redirect:/pickticket-list";
     }
 
+    @RequestMapping("/stock-receipt")
+    public ModelAndView getStockReceiptOverview() { return new ModelAndView("stock_receipt"); }
+
     @RequestMapping("/stock-issue")
     public ModelAndView getStockIssueOverview() { return new ModelAndView("stock_issue"); }
 
