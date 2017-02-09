@@ -8,8 +8,6 @@
     <artifactId>PartTrack</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <packaging>war</packaging>
-
     <name>Part Track</name>
     <description>Part Track is for procurement master data</description>
     <!--
@@ -21,27 +19,23 @@
     -->
 
     <properties>
-        <spring.version>4.3.3.RELEASE</spring.version>
-        <spring.security.version>4.1.3.RELEASE</spring.security.version>
-        <jetty.version>9.4.0.v20161208</jetty.version>
-        <jetty.jsp.version>9.2.20.v20161216</jetty.jsp.version>
-        <war.outputdirectory>/Users/mabit/Downloads/tomcat859/webapps/</war.outputdirectory>
+        <spring.security.version>4.2.0.RELEASE</spring.security.version>
     </properties>
 
     <repositories>
     </repositories>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.1.RELEASE</version>
+    </parent>
+
     <dependencies>
-        <!-- Spring Framework -->
+        <!-- Spring Boot -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!-- Spring Security -->
@@ -105,20 +99,17 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <!-- Deploying the exploded WAR to tomcat with webappDirectory is quicker than deploying the WAR with outputDirectory, but is sometimes out-of-date -->
-                    <outputDirectory>${war.outputdirectory}</outputDirectory>
-                    <!--<webappDirectory>${war.outputdirectory}/PartTrack-1.0-SNAPSHOT</webappDirectory>-->
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+
+
+    </dependencies>
 </project>
