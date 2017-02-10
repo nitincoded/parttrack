@@ -109,7 +109,7 @@ public class RequisitionController {
 
         t.commit();
 
-        return "redirect:/requisition";
+        return "redirect:/requisition-list";
     }
 
     @RequestMapping(value = "/requisitionline-save", method = RequestMethod.POST)

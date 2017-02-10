@@ -51,11 +51,13 @@
         </dependency>
 
         <!-- SLF4J -->
+        <!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.6.1</version>
         </dependency>
+        -->
 
         <!-- Servlet, JSP, JSTL -->
         <dependency>
@@ -105,11 +107,46 @@
             <version>1.1.2</version>
         </dependency>
 
+        <!-- JSTL and Jasper are needed for Spring MVC's JSP view resolution -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
         </dependency>
-
-
     </dependencies>
+
+    <!--
+    For executable JAR file
+
+    On Linux with init.d:
+    ln -s /var/PartTrack/PartTrack.jar /etc/init.d/PartTrack
+    service PartTrack start
+    update-rc.d PartTrack defaults <priority>
+
+    On Linux with systemd:
+    /etc/systemd/system/PartTrack.service
+        [Unit]
+        Description=PartTrack
+        After=syslog.target
+
+        [Service]
+        User=PartTrack
+        ExecStart=/var/PartTrack/PartTrack.jar
+        SuccessExitStatus=143
+
+        [Install]
+        WantedBy=multi-user.target
+    systemctl enable PartTrack.service
+
+    On Windows:
+    Install .NET 2/4 and use WinSW
+    -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -5,6 +5,8 @@ import com.katkam.entity.Manufacturer;
 import com.katkam.entity.Uom;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +23,16 @@ import java.util.List;
 @Controller
 public class UomController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/uom-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("uom_list");
-        mv.addObject("list", getListContent());
+
+        List<Uom> list = getListContent();
+        log.trace(String.format("UoMs fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -44,14 +51,17 @@ public class UomController {
                     int a_id
     ) {
         ModelAndView mv = new ModelAndView("uom_edit");
+
         if (a_id==-1) {
-            //mv.addObject("m", new Manufacturer());
+            log.trace("Editing new UoM record");
         } else {
 //            Manufacturer m = sess.find(Manufacturer.class, new Manufacturer(a_id, null));
             Uom m = sess.byId(Uom.class).load(a_id);
+            log.trace(String.format("Editing UoM record: %s (%d)", m.getName(), m.getId()));
             mv.addObject("m", m);
         }
 //        mv.addObject("m", new Manufacturer(1, "Toyota"));
+
         return mv;
     }
 
@@ -60,6 +70,7 @@ public class UomController {
         Uom m = sess.byId(Uom.class).load(a_id);
 
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting UoM record: %s (%d)", m.getName(), m.getId()));
         sess.delete(m);
         t.commit();
 
@@ -69,16 +80,18 @@ public class UomController {
     @RequestMapping(value = "/uom-save", method = RequestMethod.POST)
     public String postSave(
             @ModelAttribute
-                    Uom a_m
+                    Uom m
     ) {
         //sess.merge(a_mfg);
         Transaction t = sess.beginTransaction();
 
-        if (a_m.getId()==-1) {
-            a_m.setId(0);
-            sess.save(a_m);
+        if (m.getId()==-1) {
+            m.setId(0);
+            sess.save(m);
+            log.trace(String.format("Saved new UoM record: %s (%d)", m.getName(), m.getId()));
         } else {
-            sess.merge(a_m);
+            sess.merge(m);
+            log.trace(String.format("Saved existing UoM record: %s (%d)", m.getName(), m.getId()));
             //sess.update(a_mfg);
         }
 
@@ -86,7 +99,7 @@ public class UomController {
         //sess.flush();
         t.commit();
 
-        return "redirect:/uom";
+        return "redirect:/uom-list";
 //        return  String.format("ID: %d, Name: %s", a_mfg.getId(), a_mfg.getName());
     }
 }

@@ -1,6 +1,8 @@
 package com.katkam.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 //@RestController
 @Controller
 public class HelloController {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     @RequestMapping({"/", "/home"})
     public String welcome() {
         return "welcome";
@@ -28,7 +32,7 @@ public class HelloController {
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String hello() throws Exception {
-        //return "hello";
+        log.info("hello");
         return new ObjectMapper().writeValueAsString("hello");
     }
 

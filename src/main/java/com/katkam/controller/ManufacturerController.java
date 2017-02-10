@@ -4,6 +4,8 @@ import com.katkam.GrizzlyHelper;
 import com.katkam.entity.Manufacturer;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,11 +19,16 @@ import java.util.List;
 @Controller
 public class ManufacturerController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/manufacturer-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("manufacturer_list");
-        mv.addObject("list", getListContent());
+
+        List<Manufacturer> list = getListContent();
+        log.trace(String.format("Manufacturers fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -40,14 +47,16 @@ public class ManufacturerController {
         int a_id
     ) {
         ModelAndView mv = new ModelAndView("manufacturer_edit");
+
         if (a_id==-1) {
-            //mv.addObject("m", new Manufacturer());
+            log.trace("Editing new manufacturer record");
         } else {
 //            Manufacturer m = sess.find(Manufacturer.class, new Manufacturer(a_id, null));
             Manufacturer m = sess.byId(Manufacturer.class).load(a_id);
+            log.trace(String.format("Editing manufacturer record: %s (%d)", m.getName(), m.getId()));
             mv.addObject("m", m);
         }
-//        mv.addObject("m", new Manufacturer(1, "Toyota"));
+
         return mv;
     }
 
@@ -56,6 +65,7 @@ public class ManufacturerController {
         Manufacturer m = sess.byId(Manufacturer.class).load(a_id);
 
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting manufacturer record: %s (%d)", m.getName(), m.getId()));
         sess.delete(m);
         t.commit();
 
@@ -65,16 +75,18 @@ public class ManufacturerController {
     @RequestMapping(value = "/manufacturer-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
-        Manufacturer a_m
+        Manufacturer m
     ) {
         //sess.merge(a_mfg);
         Transaction t = sess.beginTransaction();
 
-        if (a_m.getId()==-1) {
-            a_m.setId(0);
-            sess.save(a_m);
+        if (m.getId()==-1) {
+            m.setId(0);
+            sess.save(m);
+            log.trace(String.format("Saved new manufacturer record: %s (%d)", m.getName(), m.getId()));
         } else {
-            sess.merge(a_m);
+            sess.merge(m);
+            log.trace(String.format("Saved existing manufacturer record: %s (%d)", m.getName(), m.getId()));
             //sess.update(a_mfg);
         }
 
@@ -82,7 +94,7 @@ public class ManufacturerController {
         //sess.flush();
         t.commit();
 
-        return "redirect:/manufacturer";
+        return "redirect:/manufacturer-list";
 //        return  String.format("ID: %d, Name: %s", a_mfg.getId(), a_mfg.getName());
     }
 }

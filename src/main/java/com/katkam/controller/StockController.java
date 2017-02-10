@@ -5,6 +5,8 @@ import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import java.util.List;
 @Controller
 public class StockController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/stock-list", method = RequestMethod.GET)
     public ModelAndView getList() {
@@ -107,7 +110,7 @@ public class StockController {
 
         t.commit();
 
-        return "redirect:/stock";
+        return "redirect:/stock-list";
     }
 
     @RequestMapping(value = "/stock-receipt-purchase-order-list")

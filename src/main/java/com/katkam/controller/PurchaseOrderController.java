@@ -97,7 +97,7 @@ public class PurchaseOrderController {
         }
 
         t.commit();
-        return "redirect:/purchaseorder";
+        return "redirect:/purchaseorder-list";
     }
 
     @RequestMapping(value = "/purchaseorderline-save", method = RequestMethod.POST)

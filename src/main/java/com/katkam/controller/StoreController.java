@@ -4,6 +4,8 @@ import com.katkam.GrizzlyHelper;
 import com.katkam.entity.Store;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +22,16 @@ import java.util.List;
 @Controller
 public class StoreController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/store-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("store_list");
-        mv.addObject("list", getListContent());
+
+        List<Store> list = getListContent();
+        log.trace(String.format("Stores fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -45,8 +52,10 @@ public class StoreController {
         ModelAndView mv = new ModelAndView("store_edit");
 
         if (a_id==-1) {
+            log.trace("Editing new store record");
         } else {
             Store m = sess.byId(Store.class).load(a_id);
+            log.trace(String.format("Editing store record: %s (%d)", m.getName(), m.getId()));
             mv.addObject("m", m);
         }
 
@@ -58,6 +67,7 @@ public class StoreController {
         Store m = sess.byId(Store.class).load(a_id);
 
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting store record: %s (%d)", m.getName(), m.getId()));
         sess.delete(m);
         t.commit();
 
@@ -67,19 +77,21 @@ public class StoreController {
     @RequestMapping(value = "/store-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
-        Store a_m
+        Store m
     ) {
         Transaction t = sess.beginTransaction();
 
-        if (a_m.getId()==-1) {
-            a_m.setId(0);
-            sess.save(a_m);
+        if (m.getId()==-1) {
+            m.setId(0);
+            sess.save(m);
+            log.trace(String.format("Saved new store record: %s (%d)", m.getName(), m.getId()));
         } else {
-            sess.merge(a_m);
+            sess.merge(m);
+            log.trace(String.format("Saved existing store record: %s (%d)", m.getName(), m.getId()));
         }
 
         t.commit();
 
-        return "redirect:/store";
+        return "redirect:/store-list";
     }
 }
