@@ -4,6 +4,8 @@ import com.katkam.GrizzlyHelper;
 import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import java.util.List;
 @Controller
 public class PurchaseOrderController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping("/purchaseorder")
     public String getIndex() { return "purchaseorder_index"; }
@@ -27,8 +30,11 @@ public class PurchaseOrderController {
     @RequestMapping("/purchaseorder-list")
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("purchaseorder_list");
-        List<PurchaseOrderHeader> pos = sess.createCriteria(PurchaseOrderHeader.class).list();
-        mv.addObject("pos", pos);
+
+        List<PurchaseOrderHeader> list = sess.createCriteria(PurchaseOrderHeader.class).list();
+        log.trace(String.format("Purchase orders fetched: %d", list.size()));
+        mv.addObject("pos", list);
+
         return mv;
     }
 
@@ -39,16 +45,24 @@ public class PurchaseOrderController {
     ) {
         ModelAndView mv = new ModelAndView("purchaseorder_edit");
 
-        if (id != -1) {
+        if (id == -1) {
+            log.trace("Editing new purchase order record");
+        } else {
             PurchaseOrderHeader m = sess.byId(PurchaseOrderHeader.class).load(id);
+            log.trace(String.format("Editing purchase order record: %s (%d)", m.getName(), m.getId()));
             mv.addObject("m", m);
+
             List<PurchaseOrderLine> lines = sess.createQuery("from PurchaseOrderLine where header_id = :po").setParameter("po", id).list();
+            log.trace(String.format("Purchase order lines fetched: %d", lines.size()));
             mv.addObject("lines", lines);
+
             List<Part> parts = sess.createCriteria(Part.class).list();
+            log.trace(String.format("Parts fetched: %d", parts.size()));
             mv.addObject("parts", parts);
         }
 
         List<Store> stores = sess.createCriteria(Store.class).list();
+        log.trace(String.format("Stores fetched: %d", stores.size()));
         mv.addObject("stores", stores);
 
         return mv;
@@ -60,9 +74,12 @@ public class PurchaseOrderController {
         int id
     ) {
         PurchaseOrderHeader m = sess.byId(PurchaseOrderHeader.class).load(id);
+
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting purchase order record: %s (%d)", m.getName(), m.getId()));
         sess.delete(m);
         t.commit();
+
         return "redirect:/purchaseorder";
     }
 
@@ -72,10 +89,15 @@ public class PurchaseOrderController {
         int id
     ) {
         PurchaseOrderLine m = sess.byId(PurchaseOrderLine.class).load(id);
+
+        int header_id = m.getHeader().getId();
+
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting purchase order line record: %s - %s (%d)", m.getHeader().getName(), m.getPart().getName(), m.getId()));
         sess.delete(m);
         t.commit();
-        return "redirect:/purchaseorder";
+
+        return String.format("redirect:/purchaseorder-edit?id=%d", header_id);
     }
 
     @RequestMapping(value = "/purchaseorder-save", method = RequestMethod.POST)
@@ -92,11 +114,14 @@ public class PurchaseOrderController {
             m.setId(0);
             m.setSubmittedDate(new java.util.Date());
             sess.save(m);
+            log.trace(String.format("Saved new purchase order record: %s (%d)", m.getName(), m.getId()));
         } else {
             sess.merge(m);
+            log.trace(String.format("Saved existing purchase order record: %s (%d)", m.getName(), m.getId()));
         }
 
         t.commit();
+
         return "redirect:/purchaseorder-list";
     }
 
@@ -116,9 +141,11 @@ public class PurchaseOrderController {
 
         Transaction t = sess.beginTransaction();
         sess.save(pl);
+        log.trace(String.format("Saved new purchase order line record: %s - %s (%d)", pl.getHeader().getName(), pl.getPart().getName(), pl.getId()));
         t.commit();
 
-        return "redirect:/purchaseorder";
+//        return "redirect:/purchaseorder";
+        return String.format("redirect:/purchaseorder-edit?id=%d", header_id);
     }
 
     @RequestMapping(value = "/purchaseorder-from-requisition", method = RequestMethod.POST)
@@ -127,10 +154,10 @@ public class PurchaseOrderController {
         int id
     ) {
         PurchaseOrderHeader purchaseOrderHeader = new PurchaseOrderHeader();
+        purchaseOrderHeader.setSubmittedDate(new java.util.Date());
         List<PurchaseOrderLine> purchaseOrderLines = new ArrayList<PurchaseOrderLine>();
 
         RequisitionHeader requisitionHeader = sess.byId(RequisitionHeader.class).load(id);
-        purchaseOrderHeader.setSubmittedDate(new java.util.Date());
         //purchaseOrderHeader.setSubmittedDate(requisitionHeader.getSubmittedDate());
         purchaseOrderHeader.setStore(requisitionHeader.getStore());
         purchaseOrderHeader.setName(requisitionHeader.getName());
@@ -142,19 +169,23 @@ public class PurchaseOrderController {
             iterPoLine.setQty(iterLine.getQty());
             iterPoLine.setPart(iterLine.getPart());
             iterPoLine.setHeader(purchaseOrderHeader);
+            iterPoLine.setReceived_qty(0);
+            iterPoLine.setRequisitionLineId(iterLine.getId());
             purchaseOrderLines.add(iterPoLine);
         }
 
         Transaction t = sess.beginTransaction();
 
         sess.save(purchaseOrderHeader);
+        log.trace(String.format("Saved new purchase order record: %s (%d)", purchaseOrderHeader.getName(), purchaseOrderHeader.getId()));
         for (PurchaseOrderLine iterPoLine : purchaseOrderLines) {
             sess.save(iterPoLine);
+            log.trace(String.format("Saved new purchase order line record: %s - %s (%d)", iterPoLine.getHeader().getName(), iterPoLine.getPart().getName(), iterPoLine.getId()));
         }
-
-        //TODO Associate PR to PO
 
         t.commit();
         return "redirect:/purchaseorder";
     }
+
+    //TODO Prevent repeated generating PO from PR
 }

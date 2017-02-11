@@ -26,6 +26,18 @@ public class PurchaseOrderLine {
     @Column
     private double received_qty;
 
+    @ManyToOne
+    @JoinColumn(name = "requisition_line_id", nullable = true)
+    private int requisitionLineId;
+
+
+    public int getRequisitionLineId() {
+        return requisitionLineId;
+    }
+
+    public void setRequisitionLineId(int requisitionLineId) {
+        this.requisitionLineId = requisitionLineId;
+    }
 
     public double getReceived_qty() {
         return received_qty;

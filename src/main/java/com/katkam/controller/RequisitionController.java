@@ -4,6 +4,8 @@ import com.katkam.GrizzlyHelper;
 import com.katkam.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +23,16 @@ import java.util.List;
 @Controller
 public class RequisitionController {
     Session sess = GrizzlyHelper.getSession();
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/requisition-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("requisition_list");
-        mv.addObject("list", getListContent());
+
+        List<RequisitionHeader> list = getListContent();
+        log.trace(String.format("Requisitions fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -48,18 +55,22 @@ public class RequisitionController {
         ModelAndView mv = new ModelAndView("requisition_edit");
 
         List<Store> stores = sess.createCriteria(Store.class).list();
+        log.trace(String.format("Stores fetched: %d", stores.size()));
         mv.addObject("stores", stores);
 
-        mv.addObject("r", "rock");
-
         if (a_id == -1) {
-            //mv.addObject("m", null);
+            log.trace("Editing new requisition record");
         } else {
             RequisitionHeader m = sess.byId(RequisitionHeader.class).load(a_id);
+            log.trace(String.format("Editing requisition record: %s (%d)", m.getName(), m.getId()));
             mv.addObject("m", m);
+
             List<RequisitionLine> lines = (List<RequisitionLine>) sess.createQuery("from RequisitionLine where header_id = :code").setParameter("code", a_id).list();
+            log.trace(String.format("Requisition lines fetched: %d", lines.size()));
             mv.addObject("lines", lines);
+
             List<Part> parts = sess.createCriteria(Part.class).list();
+            log.trace(String.format("Parts fetched: %d", parts.size()));
             mv.addObject("parts", parts);
         }
 
@@ -71,6 +82,7 @@ public class RequisitionController {
         RequisitionHeader m = sess.byId(RequisitionHeader.class).load(a_id);
 
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting requisition record: %s (%d)", m.getName(), m.getId()));
         sess.delete(m);
         t.commit();
 
@@ -82,29 +94,33 @@ public class RequisitionController {
     public String postDeleteLine(@RequestParam("id") int a_id) {
         RequisitionLine m = sess.byId(RequisitionLine.class).load(a_id);
 
+        int header_id = m.getHeader().getId();
+
         Transaction t = sess.beginTransaction();
+        log.trace(String.format("Deleting requisition line record: %s - %s (%d)", m.getHeader().getName(), m.getPart().getName(), m.getId()));
         sess.delete(m);
         t.commit();
 
-        return "redirect:/requisition-list"; //TODO redirect to the same requisition
+        return String.format("redirect:/requisition-edit?id=%d", header_id);
     }
 
     @RequestMapping(value = "/requisition-save", method = RequestMethod.POST)
     public String postSave(
         @ModelAttribute
-        RequisitionHeader a_m,
+        RequisitionHeader m,
         @RequestParam("store_id")
         int store_id
     ) {
+        m.setStore(sess.byId(Store.class).load(store_id));
         Transaction t = sess.beginTransaction();
 
-        a_m.setStore(sess.byId(Store.class).load(store_id));
-
-        if (a_m.getId()==-1) {
-            a_m.setId(0);
-            sess.save(a_m);
+        if (m.getId()==-1) {
+            m.setId(0);
+            sess.save(m);
+            log.trace(String.format("Saved new requisition record: %s (%d)", m.getName(), m.getId()));
         } else {
-            sess.merge(a_m);
+            sess.merge(m);
+            log.trace(String.format("Saved existing requisition record: %s (%d)", m.getName(), m.getId()));
         }
 
         t.commit();
@@ -122,11 +138,7 @@ public class RequisitionController {
         @RequestParam("qty")
         double qty
     ) {
-//        int header_id = Integer.parseInt(request.getParameter("header_id"));
-//        int part_id = Integer.parseInt(request.getParameter("part_id"));
-//        double qty = Double.parseDouble(request.getParameter("qty"));
-
-        Transaction t = sess.beginTransaction();
+//        request.getParameter("param_name")); to get any additional parameters
 
         RequisitionLine rl = new RequisitionLine();
         rl.setQty(qty);
@@ -136,11 +148,12 @@ public class RequisitionController {
 
         //TODO Store attribute
 
+        Transaction t = sess.beginTransaction();
         sess.save(rl);
-
+        log.trace(String.format("Saved new requisition line record: %s - %s (%d)", rl.getHeader().getName(), rl.getPart().getName(), rl.getId()));
         t.commit();
 
-        return "redirect:/requisition"; //TODO redirect to the same requisition
+        return String.format("redirect:/requisition-edit?id=%d", header_id);
     }
 
     //TODO Add RequisitionLine functions

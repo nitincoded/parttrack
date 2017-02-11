@@ -52,6 +52,7 @@ public class PickticketController {
         ModelAndView mv = new ModelAndView("pickticket_edit");
 
         List<Store> stores = sess.createCriteria(Store.class).list();
+        log.trace(String.format("Stores fetched: %d", stores.size()));
         mv.addObject("stores", stores);
 
         if (a_id==-1) {
@@ -106,9 +107,9 @@ public class PickticketController {
             @RequestParam("store_id")
             int store_id
     ) {
+        m.setStore(sess.byId(Store.class).load(store_id));
         Transaction t = sess.beginTransaction();
 
-        m.setStore(sess.byId(Store.class).load(store_id));
         if (m.getId()==-1) {
             m.setId(0);
             sess.save(m);
@@ -132,18 +133,20 @@ public class PickticketController {
             @RequestParam("qty")
             double qty
     ) {
-        Transaction t = sess.beginTransaction();
-
         PickticketLine pl = new PickticketLine();
         pl.setPart(sess.byId(Part.class).load(part_id));
         pl.setHeader(sess.byId(PickticketHeader.class).load(header_id));
         pl.setQty(qty);
+        pl.setIssued_qty(0);
         //TODO handle case when same part is already in the list
 
+        Transaction t = sess.beginTransaction();
         sess.save(pl);
         log.trace(String.format("Saved new pick ticket record: %s - %s (%d)", pl.getHeader().getName(), pl.getPart().getName(), pl.getId()));
-
         t.commit();
+
+        //Pass redirect parameter using a RedirectAttributes method parameter and calling addAttribute
+        //See: http://stackoverflow.com/questions/19266427/what-are-ways-for-pass-parameters-from-controller-after-redirect-in-spring-mvc
 
         return String.format("redirect:/pickticket-edit?id=%d", header_id);
     }

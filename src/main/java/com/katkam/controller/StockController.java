@@ -28,7 +28,11 @@ public class StockController {
     @RequestMapping(value = "/stock-list", method = RequestMethod.GET)
     public ModelAndView getList() {
         ModelAndView mv = new ModelAndView("stock_list");
-        mv.addObject("list", getListContent());
+
+        List<Stock> list = getListContent();
+        log.trace(String.format("Stocks fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -49,15 +53,19 @@ public class StockController {
         ModelAndView mv = new ModelAndView("stock_edit");
 
         if (a_id==-1) {
+            log.trace("Editing new stock record");
         } else {
             Stock m = sess.byId(Stock.class).load(a_id);
+            log.trace(String.format("Editing customer record: %s (%d)", m.getPart().getName(), m.getId()));
             mv.addObject("m", m);
         }
 
         List<Part> parts = sess.createCriteria(Part.class).list();
-        List<Store> stores = sess.createCriteria(Store.class).list();
-
+        log.trace(String.format("Parts fetched: %d", parts.size()));
         mv.addObject("parts", parts);
+
+        List<Store> stores = sess.createCriteria(Store.class).list();
+        log.trace(String.format("Stores fetched: %d", stores.size()));
         mv.addObject("stores", stores);
 
         return mv;
@@ -69,6 +77,7 @@ public class StockController {
 
         if (m.getQty()==0) { //Ensure stock is zero before deleting
             Transaction t = sess.beginTransaction();
+            log.trace(String.format("Deleting pick ticket record: %s (%d)", m.getPart().getName(), m.getId()));
             sess.delete(m);
             t.commit();
         }
@@ -78,7 +87,7 @@ public class StockController {
 
     @RequestMapping(value = "/stock-save", method = RequestMethod.POST)
     public String postSave(
-        @ModelAttribute Stock a_m,
+        @ModelAttribute Stock m,
         @RequestParam(name = "store_id") int store_id,
         @RequestParam(name = "part_id") int part_id
     ) {
@@ -86,24 +95,26 @@ public class StockController {
 
         Xact xact = new Xact();
 
-        a_m.setStore(sess.byId(Store.class).load(store_id));
-        a_m.setPart(sess.byId(Part.class).load(part_id));
+        m.setStore(sess.byId(Store.class).load(store_id));
+        m.setPart(sess.byId(Part.class).load(part_id));
 
-        xact.setStore(a_m.getStore());
-        xact.setPart(a_m.getPart());
+        xact.setStore(m.getStore());
+        xact.setPart(m.getPart());
         xact.setDate(new java.util.Date());
 
-        if (a_m.getId()==-1) {
-            a_m.setId(0);
-            xact.setQty(a_m.getQty());
+        if (m.getId()==-1) {
+            m.setId(0);
+            xact.setQty(m.getQty());
             xact.setNarration("Stock input entry");
             xact.setTypeCode("INPUTSTOCK");
-            sess.save(a_m);
+            sess.save(m);
+            log.trace(String.format("Saved new stock record: %s (%d)", m.getPart().getName(), m.getId()));
         } else {
-            xact.setQty(a_m.getQty() - sess.byId(Stock.class).load(a_m.getId()).getQty());
+            xact.setQty(m.getQty() - sess.byId(Stock.class).load(m.getId()).getQty());
             xact.setNarration("Stock adjustment entry");
             xact.setTypeCode("STOCKADJ");
-            sess.merge(a_m);
+            sess.merge(m);
+            log.trace(String.format("Saved existing stock record: %s (%d)", m.getPart().getName(), m.getId()));
         }
 
         sess.save(xact);
@@ -127,8 +138,11 @@ public class StockController {
         @RequestParam("id") int id
     ) {
         ModelAndView mv = new ModelAndView("stock_receipt_purchase_order_select");
+
         List<PurchaseOrderLine> lines = sess.createQuery("from PurchaseOrderLine where header_id = :code").setParameter("code", id).list();
+        log.trace(String.format("Stock lines fetched: %d", lines.size()));
         mv.addObject("lines", lines);
+
         return mv;
     }
 
@@ -152,6 +166,7 @@ public class StockController {
         sess.save(xact);
         sess.merge(obj);
         sess.merge(stock);
+        log.trace(String.format("Saved stock record: %s (%d)", stock.getPart().getName(), stock.getId()));
 
         t.commit();
 
@@ -162,9 +177,12 @@ public class StockController {
     @RequestMapping(value = "/stock-issue-pickticket-list")
     public ModelAndView stockIssuePickticketList() {
         ModelAndView mv = new ModelAndView("stock_issue_pickticket_list");
+
         List<PickticketHeader> picktickets = sess.createCriteria(PickticketHeader.class).list();
+        log.trace(String.format("Pick tickets fetched: %d", picktickets.size()));
         //TODO Do not include picktickets with all items already issued
         mv.addObject("picktickets", picktickets);
+
         return mv;
     }
 
@@ -174,6 +192,7 @@ public class StockController {
     ) {
         ModelAndView mv = new ModelAndView("stock_issue_pickticket_select");
         List<PickticketLine> lines = sess.createQuery("from PickticketLine where header_id = :code").setParameter("code", id).list();
+        log.trace(String.format("Pick ticket lines fetched: %d", lines.size()));
         mv.addObject("lines", lines);
         return mv;
     }
@@ -217,6 +236,7 @@ public class StockController {
         sess.save(xact);
         sess.merge(obj);
         sess.merge(stock);
+        log.trace(String.format("Saved stock record: %s (%d)", stock.getPart().getName(), stock.getId()));
 
         t.commit();
 
@@ -232,8 +252,11 @@ public class StockController {
     @RequestMapping("/stock-issue-direct")
     public ModelAndView getStockIssueDirect() {
         ModelAndView mv = new ModelAndView("stock_issue_direct");
-        List<Stock> stocklist = sess.createCriteria(Stock.class).list();
-        mv.addObject("list", stocklist);
+
+        List<Stock> list = sess.createCriteria(Stock.class).list();
+        log.trace(String.format("Stocks fetched: %d", list.size()));
+        mv.addObject("list", list);
+
         return mv;
     }
 
@@ -258,6 +281,7 @@ public class StockController {
         sess.merge(st);
         sess.save(xact);
         t.commit();
+        log.trace(String.format("Saved stock record: %s (%d)", st.getPart().getName(), st.getId()));
 
         return "redirect:/stock-issue-direct";
     }
