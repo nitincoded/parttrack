@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Controller
 public class StoreController {
-    Session sess = GrizzlyHelper.getSession();
+    Session sess = new GrizzlyHelper().getSession();
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/store-list", method = RequestMethod.GET)

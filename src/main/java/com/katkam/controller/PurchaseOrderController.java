@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Controller
 public class PurchaseOrderController {
-    Session sess = GrizzlyHelper.getSession();
+    Session sess = new GrizzlyHelper().getSession();
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping("/purchaseorder")
@@ -170,7 +170,7 @@ public class PurchaseOrderController {
             iterPoLine.setPart(iterLine.getPart());
             iterPoLine.setHeader(purchaseOrderHeader);
             iterPoLine.setReceived_qty(0);
-            iterPoLine.setRequisitionLineId(iterLine.getId());
+            iterPoLine.setRequisitionLine(iterLine);
             purchaseOrderLines.add(iterPoLine);
         }
 

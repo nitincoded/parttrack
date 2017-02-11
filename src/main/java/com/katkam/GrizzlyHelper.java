@@ -1,33 +1,38 @@
 package com.katkam;
 
 import com.katkam.entity.*;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import java.sql.DriverManager;
 import java.util.Properties;
 
 /**
  * Created by Developer on 1/7/17.
  */
+@Component
 public class GrizzlyHelper {
-    private static final SessionFactory concreteSessionFactory;
-    static {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    Session instance = null;
+
+    public SessionFactory getConcreteSessionFactory() throws Exception {
+        SessionFactory concreteSessionFactory;
+
+        Class.forName("com.mysql.jdbc.Driver");
 //            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 
-            Properties prop = new Properties();
-            prop.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/parttrack?serverTimezone=Asia/Dubai");
-            prop.setProperty("hibernate.connection.username", "root");
-            prop.setProperty("hibernate.connection.password", "pepsi");
-            prop.setProperty("dialect", "org.hibernate.dialect.MySQLDialect");
+        Properties prop = new Properties();
+        prop.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/parttrack?serverTimezone=Asia/Dubai&user=root&password=pepsi");
+//        prop.setProperty("hibernate.connection.username", "root");
+//        prop.setProperty("hibernate.connection.password", "pepsi");
+        prop.setProperty("dialect", "org.hibernate.dialect.MySQLDialect");
 
-            prop.setProperty("hibernate.hbm2ddl.auto", "update");
+        prop.setProperty("hibernate.hbm2ddl.auto", "update");
 //            prop.setProperty("hibernate.hbm2ddl.auto", "create");
 
-            concreteSessionFactory = new org.hibernate.cfg.Configuration()
+        concreteSessionFactory = new org.hibernate.cfg.Configuration()
                 .addProperties(prop)
                 .addPackage("com.katkam.entity")
                 .addAnnotatedClass(Manufacturer.class)
@@ -46,14 +51,22 @@ public class GrizzlyHelper {
                 .addAnnotatedClass(Employee.class)
                 .addAnnotatedClass(Customer.class)
                 .buildSessionFactory()
-                ;
+        ;
+
+        return concreteSessionFactory;
+    }
+
+    public Session getSession() {
+        try {
+            if (instance == null) {
+                instance = getConcreteSessionFactory().openSession();
+            }
+
+            return instance;
         }
         catch (Exception ex) {
-            throw new ExceptionInInitializerError(ex);
+            return null;
         }
-    }
-    public static Session getSession() throws HibernateException {
-        return concreteSessionFactory.openSession();
     }
 
 }

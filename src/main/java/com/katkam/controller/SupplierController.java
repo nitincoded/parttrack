@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Controller
 public class SupplierController {
-    Session sess = GrizzlyHelper.getSession();
+    Session sess = new GrizzlyHelper().getSession();
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/supplier-list", method = RequestMethod.GET)

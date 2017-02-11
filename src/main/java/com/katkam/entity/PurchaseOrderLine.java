@@ -28,15 +28,15 @@ public class PurchaseOrderLine {
 
     @ManyToOne
     @JoinColumn(name = "requisition_line_id", nullable = true)
-    private int requisitionLineId;
+    private RequisitionLine requisitionLine;
 
 
-    public int getRequisitionLineId() {
-        return requisitionLineId;
+    public RequisitionLine getRequisitionLine() {
+        return requisitionLine;
     }
 
-    public void setRequisitionLineId(int requisitionLineId) {
-        this.requisitionLineId = requisitionLineId;
+    public void setRequisitionLine(RequisitionLine requisitionLine) {
+        this.requisitionLine = requisitionLine;
     }
 
     public double getReceived_qty() {
